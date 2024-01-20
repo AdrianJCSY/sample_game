@@ -1,5 +1,5 @@
 import customtkinter
-
+customtkinter.deactivate_automatic_dpi_awareness()
 class DisplayGUI:
     def __init__(self):
         self.display_setup()
