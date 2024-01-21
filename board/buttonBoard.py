@@ -45,21 +45,54 @@ class ButtonBoard:
                 self.nodes[id].remove(self.selecting_node)
                 self.selecting = False
             else:
-                # Add a line
-                self.node_connections[f"{self.selecting_node}-{id}"] = {
-                    "x1" : (self.selecting_node % 3) * (self.button_width + self.button_padding) + self.button_width/2,
-                    "y1" : 0 + self.button_height/2 if self.selecting_node < 3 
-                        else (self.button_height + self.button_padding) + self.button_width/2 if self.selecting_node < 6 
-                        else 2 * (self.button_height + self.button_padding) + self.button_width/2, 
-                    "x2" : (id % 3) * (self.button_width + self.button_padding) + self.button_width/2,
-                    "y2" : 0 + self.button_height/2 if id < 3 
-                        else (self.button_height + self.button_padding) + self.button_width/2 if id < 6 
-                        else 2 * (self.button_height + self.button_padding) + self.button_width/2,
-                }
-                # Add as a connection to node to node
-                self.nodes[self.selecting_node].append(id)
-                self.nodes[id].append(self.selecting_node)
-                self.selecting = False
+                #Check if placements are valid (manually; some fuckery afoot)
+                #This one swaps the values around from least to great (for an easier comparison)
+                if self.selecting_node > id:
+                    self.selecting_node , id = id , self.selecting_node
+
+               #ThereHasToBeABetterWay.mp4
+                if self.selecting_node == 0 and id not in {1, 3, 4}:
+                    print(f"Invalid placement!")
+                
+                elif self.selecting_node == 1 and id not in {0, 2, 3, 4, 5}:
+                    print(f"Invalid placement!")
+                
+                elif self.selecting_node == 2 and id not in {1, 4, 5}:
+                    print(f"Invalid placement!")
+                
+                elif self.selecting_node == 3 and id not in {0, 1, 4, 6, 7}:
+                    print(f"Invalid placement!")
+                
+                #No 4; 4 can do anything it desires in life
+                
+                elif self.selecting_node == 5 and id not in {1, 2, 4, 7, 8}:
+                    print(f"Invalid placement!")
+                
+                elif self.selecting_node == 6 and id not in {3, 4, 7}:
+                    print(f"Invalid placement!")
+
+                elif self.selecting_node == 7 and id not in {3, 4, 5, 6, 8}:
+                    print(f"Invalid placement!")
+
+                elif self.selecting_node == 8 and id not in {4, 5, 7}:
+                    print(f"Invalid placement!")
+
+                else:
+                    # Add a line
+                    self.node_connections[f"{self.selecting_node}-{id}"] = {
+                        "x1" : (self.selecting_node % 3) * (self.button_width + self.button_padding) + self.button_width/2,
+                        "y1" : 0 + self.button_height/2 if self.selecting_node < 3 
+                            else (self.button_height + self.button_padding) + self.button_width/2 if self.selecting_node < 6 
+                            else 2 * (self.button_height + self.button_padding) + self.button_width/2, 
+                        "x2" : (id % 3) * (self.button_width + self.button_padding) + self.button_width/2,
+                        "y2" : 0 + self.button_height/2 if id < 3 
+                            else (self.button_height + self.button_padding) + self.button_width/2 if id < 6 
+                            else 2 * (self.button_height + self.button_padding) + self.button_width/2,
+                    }
+                    # Add as a connection to node to node
+                    self.nodes[self.selecting_node].append(id)
+                    self.nodes[id].append(self.selecting_node)
+                    self.selecting = False
         else:
             self.selecting = False
             
@@ -104,7 +137,7 @@ class ButtonBoard:
                 # fg_color/hover_color -> color of the object
                 # border_color -> border color
                 # text_color/text_color_disabled -> text color
+
         for key, node_connection in self.node_connections.items():
             self.draw_line(node_connection.get("x1"), node_connection.get("y1"), 
                            node_connection.get("x2"), node_connection.get("y2"))
-        
