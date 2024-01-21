@@ -46,36 +46,44 @@ class ButtonBoard:
                 self.selecting = False
             else:
                 #Check if placements are valid (manually; some fuckery afoot)
-                #This one swaps the values around from least to great (for an easier comparison)
+                #This one swaps the values around from least to great (for an easier comparison).
                 if self.selecting_node > id:
                     self.selecting_node , id = id , self.selecting_node
 
                #ThereHasToBeABetterWay.mp4
                 if self.selecting_node == 0 and id not in {1, 3, 4}:
                     print(f"Invalid placement!")
+                    self.selecting = False
                 
                 elif self.selecting_node == 1 and id not in {0, 2, 3, 4, 5}:
                     print(f"Invalid placement!")
+                    self.selecting = False
                 
                 elif self.selecting_node == 2 and id not in {1, 4, 5}:
                     print(f"Invalid placement!")
+                    self.selecting = False
                 
                 elif self.selecting_node == 3 and id not in {0, 1, 4, 6, 7}:
                     print(f"Invalid placement!")
+                    self.selecting = False
                 
                 #No 4; 4 can do anything it desires in life
                 
                 elif self.selecting_node == 5 and id not in {1, 2, 4, 7, 8}:
                     print(f"Invalid placement!")
+                    self.selecting = False
                 
                 elif self.selecting_node == 6 and id not in {3, 4, 7}:
                     print(f"Invalid placement!")
+                    self.selecting = False
 
                 elif self.selecting_node == 7 and id not in {3, 4, 5, 6, 8}:
                     print(f"Invalid placement!")
+                    self.selecting = False
 
                 elif self.selecting_node == 8 and id not in {4, 5, 7}:
                     print(f"Invalid placement!")
+                    self.selecting = False
 
                 else:
                     # Add a line
