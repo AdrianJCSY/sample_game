@@ -40,26 +40,92 @@ class ButtonBoard:
                     connection_data = self.node_connections.pop(f"{id}-{self.selecting_node}", None)
                     if connection_data:
                         print(f"Deleted line {id}-{self.selecting_node}")
-
+                                        
                 self.nodes[self.selecting_node].remove(id)
                 self.nodes[id].remove(self.selecting_node)
                 self.selecting = False
-            else:
-                # Add a line
-                self.node_connections[f"{self.selecting_node}-{id}"] = {
-                    "x1" : (self.selecting_node % 3) * (self.button_width + self.button_padding) + self.button_width/2,
-                    "y1" : 0 + self.button_height/2 if self.selecting_node < 3 
-                        else (self.button_height + self.button_padding) + self.button_width/2 if self.selecting_node < 6 
-                        else 2 * (self.button_height + self.button_padding) + self.button_width/2, 
-                    "x2" : (id % 3) * (self.button_width + self.button_padding) + self.button_width/2,
-                    "y2" : 0 + self.button_height/2 if id < 3 
-                        else (self.button_height + self.button_padding) + self.button_width/2 if id < 6 
-                        else 2 * (self.button_height + self.button_padding) + self.button_width/2,
-                }
-                # Add as a connection to node to node
-                self.nodes[self.selecting_node].append(id)
-                self.nodes[id].append(self.selecting_node)
+
+            # Check if number of lines exceed 9
+            elif len(self.node_connections) >= 9:
+                print("There can only be 9 lines!")
                 self.selecting = False
+
+            #Checks if diagonals intersect
+                #I have become yanderedev; destroyer of code
+            elif "0-4" in self.node_connections and id in {1, 3} and self.selecting_node in {1, 3}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            elif "2-4" in self.node_connections and id in {1, 5} and self.selecting_node in {1, 5}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            elif "4-6" in self.node_connections and id in {3, 7} and self.selecting_node in {3, 7}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            elif "4-8" in self.node_connections and id in {5, 7} and self.selecting_node in {5, 7}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            
+            elif "1-3" in self.node_connections and id in {0, 4} and self.selecting_node in {0, 4}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            elif "1-5" in self.node_connections and id in {2, 4} and self.selecting_node in {2, 4}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            elif "3-7" in self.node_connections and id in {4, 6} and self.selecting_node in {4, 6}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+            elif "5-7" in self.node_connections and id in {4, 8} and self.selecting_node in {4, 8}:
+                print("Intesecting diagonals!")
+                self.selecting = False
+
+            else:
+                #Check if placements are valid (manually; some fuckery afoot)
+                #This one swaps the values around from least to great (for an easier comparison).
+                if self.selecting_node > id:
+                    self.selecting_node , id = id , self.selecting_node
+               #ThereHasToBeABetterWay.mp4
+                if self.selecting_node == 0 and id not in {1, 3, 4}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                elif self.selecting_node == 1 and id not in {0, 2, 3, 4, 5}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                elif self.selecting_node == 2 and id not in {1, 4, 5}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                elif self.selecting_node == 3 and id not in {0, 1, 4, 6, 7}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                #No 4; 4 can do anything it desires in life
+                elif self.selecting_node == 5 and id not in {1, 2, 4, 7, 8}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                elif self.selecting_node == 6 and id not in {3, 4, 7}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                elif self.selecting_node == 7 and id not in {3, 4, 5, 6, 8}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+                elif self.selecting_node == 8 and id not in {4, 5, 7}:
+                    print(f"Invalid placement!")
+                    self.selecting = False
+
+                else:
+                    # Add a line
+                    self.node_connections[f"{self.selecting_node}-{id}"] = {
+                        "x1" : (self.selecting_node % 3) * (self.button_width + self.button_padding) + self.button_width/2,
+                        "y1" : 0 + self.button_height/2 if self.selecting_node < 3 
+                            else (self.button_height + self.button_padding) + self.button_width/2 if self.selecting_node < 6 
+                            else 2 * (self.button_height + self.button_padding) + self.button_width/2, 
+                        "x2" : (id % 3) * (self.button_width + self.button_padding) + self.button_width/2,
+                        "y2" : 0 + self.button_height/2 if id < 3 
+                            else (self.button_height + self.button_padding) + self.button_width/2 if id < 6 
+                            else 2 * (self.button_height + self.button_padding) + self.button_width/2,
+                    }
+                    # Add as a connection to node to node
+                    self.nodes[self.selecting_node].append(id)
+                    self.nodes[id].append(self.selecting_node)
+                    self.selecting = False
         else:
             self.selecting = False
             
@@ -104,7 +170,7 @@ class ButtonBoard:
                 # fg_color/hover_color -> color of the object
                 # border_color -> border color
                 # text_color/text_color_disabled -> text color
+
         for key, node_connection in self.node_connections.items():
             self.draw_line(node_connection.get("x1"), node_connection.get("y1"), 
                            node_connection.get("x2"), node_connection.get("y2"))
-        
